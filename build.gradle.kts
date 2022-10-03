@@ -29,9 +29,10 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+	implementation("org.springframework.boot:spring-boot-starter-validation")
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("mysql:mysql-connector-java")
-	annotationProcessor("org.projectlombok:lombok")
+//	annotationProcessor("org.projectlombok:lombok") //kotlin+롬복 사용불가..
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
 }
