@@ -8,27 +8,32 @@ import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
 
 @Entity
-class User(
+class User() {
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var user_id: Long = 0
 
     @Email
     @NotBlank
     @Column(unique = true)
-    var email: String?,
+    var email: String? = null
 
     @NotBlank
-    var password: String?,
+    var password: String? = null
 
     @NotBlank
-    var username: String?
-
-) {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var user_id: Long = 0
+    var username: String? = null
 
     @CreationTimestamp
     var created_at:LocalDateTime? = null
 
     @UpdateTimestamp
     var updated_at:LocalDateTime? = null
+
+    constructor(email:String, password:String, username:String):this(){
+        this.email = email
+        this.password = password
+        this.username = username
+    }
 
 }
