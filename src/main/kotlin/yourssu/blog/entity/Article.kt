@@ -27,4 +27,7 @@ class Article() {
     @JoinColumn(name = "user_id")
     var user_id:User? = null
 
+    @OneToMany(mappedBy = "article_id", orphanRemoval = true)
+    var comments:List<Comment> = ArrayList()
+
 }

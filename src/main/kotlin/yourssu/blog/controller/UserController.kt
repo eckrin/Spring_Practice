@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import yourssu.blog.dto.req.SignUpRequestDTO
+import yourssu.blog.dto.req.WithdrawRequestDTO
 import yourssu.blog.dto.res.SignUpResponseDTO
 import yourssu.blog.service.UserService
 import javax.validation.Valid
@@ -16,7 +17,8 @@ class UserController {
     lateinit var userService: UserService
 
     @PostMapping("/signUp")
-    fun signUp(@Valid @RequestBody dto: SignUpRequestDTO):SignUpResponseDTO {
+    fun signUp( @RequestBody dto: SignUpRequestDTO):SignUpResponseDTO {
         return userService.signUp(dto.email, dto.password, dto.username)
     }
+    
 }

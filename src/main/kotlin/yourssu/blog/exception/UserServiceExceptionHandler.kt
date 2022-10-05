@@ -14,7 +14,7 @@ class UserServiceExceptionHandler {
     @ExceptionHandler(EmailExistsException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun handleInvalidNameException(exception: EmailExistsException, request:HttpServletRequest):ErrorResponse {
-        return ErrorResponse(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), "error 01", exception.message, request.requestURI)
+        return ErrorResponse(LocalDateTime.now(), "BAD_REQUEST", exception.message, request.requestURI)
     }
 
 }

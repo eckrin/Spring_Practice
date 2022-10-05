@@ -30,6 +30,12 @@ class User() {
     @UpdateTimestamp
     var updated_at:LocalDateTime? = null
 
+    @OneToMany(mappedBy = "user_id", orphanRemoval = true)
+    var articles:List<Article> = ArrayList()
+
+    @OneToMany(mappedBy = "user_id", orphanRemoval = true)
+    var comments:List<Comment> = ArrayList()
+
     constructor(email:String, password:String, username:String):this(){
         this.email = email
         this.password = password

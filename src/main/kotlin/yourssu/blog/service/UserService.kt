@@ -22,7 +22,7 @@ class UserService {
     @Transactional
     fun signUp(email:String, password:String, username:String):SignUpResponseDTO {
         if(userRepository.existsByEmail(email)) {
-            throw EmailExistsException("중복 이메일입니다.")
+            throw EmailExistsException("중복된 이메일입니다.")
         }
         userRepository.save(
             User(email, encoder.encode(password), username)
