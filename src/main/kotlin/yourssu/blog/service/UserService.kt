@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service
 import yourssu.blog.dto.res.SignUpResponseDTO
 import yourssu.blog.entity.User
 import yourssu.blog.exception.userservice.EmailExistsException
+import yourssu.blog.exception.userservice.PasswordIncorrectException
+import yourssu.blog.exception.userservice.UserNotFoundException
 import yourssu.blog.repository.UserRepository
 import javax.transaction.Transactional
 
@@ -29,5 +31,17 @@ class UserService {
         )
 
         return SignUpResponseDTO(email, username)
+    }
+
+    @Transactional
+    fun withdraw(email: String, password: String) {
+        var user = userRepository.findByEmail(email)
+        if(user==null) {
+            throw UserNotFoundException("해당 유저가 존재하지 않습니다.")
+        }
+        if(!encoder.matches(password, user.password)) {
+            throw PasswordIncorrectException("비밀번호가 틀립니다.")
+        }
+        userRepository.deleteById(user.user_id)
     }
 }

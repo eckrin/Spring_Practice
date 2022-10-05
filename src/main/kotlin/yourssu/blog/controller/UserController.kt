@@ -17,8 +17,12 @@ class UserController {
     lateinit var userService: UserService
 
     @PostMapping("/signUp")
-    fun signUp( @RequestBody dto: SignUpRequestDTO):SignUpResponseDTO {
+    fun signUp(@Valid @RequestBody dto: SignUpRequestDTO):SignUpResponseDTO {
         return userService.signUp(dto.email, dto.password, dto.username)
     }
-    
+
+    @PostMapping("/withdraw")
+    fun withdraw(@Valid @RequestBody dto:WithdrawRequestDTO) {
+        return userService.withdraw(dto.email, dto.password)
+    }
 }
