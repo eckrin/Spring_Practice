@@ -3,6 +3,7 @@ package yourssu.blog.entity
 import org.hibernate.annotations.CreationTimestamp
 import java.time.LocalDateTime
 import javax.persistence.*
+import javax.validation.constraints.NotBlank
 
 @Entity
 class Article() {
@@ -11,10 +12,12 @@ class Article() {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var article_id:Long = 0
 
-    @Column(nullable = false, length = 255)
+    @NotBlank
+    @Column(length = 255)
     var title:String? = null
 
-    @Column(nullable = false, length = 255)
+    @NotBlank
+    @Column(length = 255)
     var content:String? = null
 
     @CreationTimestamp
@@ -29,5 +32,11 @@ class Article() {
 
     @OneToMany(mappedBy = "article_id", orphanRemoval = true)
     var comments:List<Comment> = ArrayList()
+
+    constructor(title:String, content:String, user:User):this() {
+        this.title = title
+        this.content = content
+        this.user_id = user
+    }
 
 }

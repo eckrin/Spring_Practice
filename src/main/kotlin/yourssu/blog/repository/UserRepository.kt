@@ -6,6 +6,6 @@ import yourssu.blog.entity.User
 
 @Repository
 interface UserRepository:JpaRepository<User, Long> {
+    fun findByEmail(email:String?): User?
     fun existsByEmail(email:String):Boolean
-    fun findByEmail(email:String):User
 }
