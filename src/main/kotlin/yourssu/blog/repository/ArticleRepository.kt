@@ -6,5 +6,4 @@ import yourssu.blog.entity.Article
 
 @Repository
 interface ArticleRepository:JpaRepository<Article, Long> {
-    fun findByEmail(email:String):Article
 }

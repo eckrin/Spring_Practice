@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import yourssu.blog.exception.articleservice.ArticleNotFoundException
 import yourssu.blog.exception.userservice.EmailExistsException
 import yourssu.blog.exception.userservice.PasswordIncorrectException
 import yourssu.blog.exception.userservice.UserNotFoundException
@@ -27,7 +28,13 @@ class UserServiceExceptionHandler {
 
     @ExceptionHandler(PasswordIncorrectException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    fun passwordIncorrectException(exception: UserNotFoundException, request: HttpServletRequest):ErrorResponse {
+    fun handlePasswordIncorrectException(exception: PasswordIncorrectException, request: HttpServletRequest):ErrorResponse {
+        return ErrorResponse(LocalDateTime.now(), "BAD_REQUEST", exception.message, request.requestURI)
+    }
+
+    @ExceptionHandler(ArticleNotFoundException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun handleArticleNotFoundException(exception: ArticleNotFoundException, request: HttpServletRequest):ErrorResponse {
         return ErrorResponse(LocalDateTime.now(), "BAD_REQUEST", exception.message, request.requestURI)
     }
 

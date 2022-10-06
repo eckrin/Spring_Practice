@@ -1,6 +1,7 @@
 package yourssu.blog.entity
 
 import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.UpdateTimestamp
 import java.time.LocalDateTime
 import javax.persistence.*
 import javax.validation.constraints.NotBlank
@@ -23,7 +24,7 @@ class Article() {
     @CreationTimestamp
     var created_at:LocalDateTime? = null
 
-    @CreationTimestamp
+    @UpdateTimestamp
     var updated_at:LocalDateTime? = null
 
     @ManyToOne
@@ -37,6 +38,11 @@ class Article() {
         this.title = title
         this.content = content
         this.user_id = user
+    }
+
+    fun update(title:String, content:String) {
+        this.title = title
+        this.content = content
     }
 
 }
