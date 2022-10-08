@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
-class Comment () {
+class Comment() {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var comment_id:Long = 0
@@ -20,11 +20,21 @@ class Comment () {
     @UpdateTimestamp
     var updated_at:LocalDateTime? = null
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id")
     var article_id:Article? = null
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     var user_id:User? = null
+
+    constructor(content:String, article:Article, user:User):this() {
+        this.content = content
+        this.article_id = article
+        this.user_id = user
+    }
+
+    fun updateContent(content:String) {
+        this.content = content
+    }
 }

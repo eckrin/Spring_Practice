@@ -5,7 +5,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import yourssu.blog.exception.articleservice.ArticleNotFoundException
+import yourssu.blog.exception.commentservice.CommentNotFoundException
 import yourssu.blog.exception.userservice.EmailExistsException
+import yourssu.blog.exception.userservice.NoPermissionException
 import yourssu.blog.exception.userservice.PasswordIncorrectException
 import yourssu.blog.exception.userservice.UserNotFoundException
 import java.time.LocalDateTime
@@ -35,6 +37,18 @@ class UserServiceExceptionHandler {
     @ExceptionHandler(ArticleNotFoundException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun handleArticleNotFoundException(exception: ArticleNotFoundException, request: HttpServletRequest):ErrorResponse {
+        return ErrorResponse(LocalDateTime.now(), "BAD_REQUEST", exception.message, request.requestURI)
+    }
+
+    @ExceptionHandler(CommentNotFoundException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun handleCommentNotFoundException(exception: CommentNotFoundException, request: HttpServletRequest):ErrorResponse {
+        return ErrorResponse(LocalDateTime.now(), "BAD_REQUEST", exception.message, request.requestURI)
+    }
+
+    @ExceptionHandler(NoPermissionException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun handleNoPermissionException(exception: NoPermissionException, request: HttpServletRequest):ErrorResponse {
         return ErrorResponse(LocalDateTime.now(), "BAD_REQUEST", exception.message, request.requestURI)
     }
 

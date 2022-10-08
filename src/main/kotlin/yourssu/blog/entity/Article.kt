@@ -27,7 +27,7 @@ class Article() {
     @UpdateTimestamp
     var updated_at:LocalDateTime? = null
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     var user_id:User? = null
 
@@ -44,5 +44,7 @@ class Article() {
         this.title = title
         this.content = content
     }
+
+
 
 }

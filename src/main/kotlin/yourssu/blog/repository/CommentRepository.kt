@@ -5,8 +5,9 @@ import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 import yourssu.blog.entity.Article
+import yourssu.blog.entity.Comment
 
 @Repository
-interface ArticleRepository:JpaRepository<Article, Long> {
+interface CommentRepository:JpaRepository<Comment, Long> {
 
 }
