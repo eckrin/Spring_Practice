@@ -4,6 +4,7 @@ import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 import java.time.LocalDateTime
 import javax.persistence.*
+import javax.validation.constraints.NotBlank
 
 @Entity
 class Comment() {
@@ -11,6 +12,7 @@ class Comment() {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var comment_id:Long = 0
 
+    @NotBlank
     @Column(nullable = false, length = 255)
     var content:String? = null
 
