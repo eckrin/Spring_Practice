@@ -52,7 +52,7 @@ class ArticleService {
         } catch (e:Exception) {
             throw ArticleNotFoundException("게시글 정보를 가져올 수 없습니다.")
         }
-        if(article.user_id!!.email!=email)
+        if(article.user!!.email!=email)
             throw NoPermissionException("게시글 수정 권한이 없습니다.") //작성자만 수정 가능
 
         article.update(title, content)
@@ -73,7 +73,7 @@ class ArticleService {
         } catch (e:Exception) {
             throw ArticleNotFoundException("게시글 정보를 가져올 수 없습니다.")
         }
-        if(article.user_id!!.email!=email)
+        if(article.user!!.email!=email)
             throw NoPermissionException("게시글 삭제 권한이 없습니다.") //작성자만 삭제 가능
 
         articleRepository.deleteById(articleId)

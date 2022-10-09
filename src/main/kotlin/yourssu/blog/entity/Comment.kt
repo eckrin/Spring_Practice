@@ -22,16 +22,16 @@ class Comment() {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id")
-    var article_id:Article? = null
+    var article:Article? = null
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    var user_id:User? = null
+    var user:User? = null
 
     constructor(content:String, article:Article, user:User):this() {
         this.content = content
-        this.article_id = article
-        this.user_id = user
+        this.article = article
+        this.user = user
     }
 
     fun updateContent(content:String) {

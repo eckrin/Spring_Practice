@@ -29,15 +29,15 @@ class Article() {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    var user_id:User? = null
+    var user:User? = null
 
-    @OneToMany(mappedBy = "article_id", orphanRemoval = true)
+    @OneToMany(mappedBy = "article", orphanRemoval = true)
     var comments:List<Comment> = ArrayList()
 
     constructor(title:String, content:String, user:User):this() {
         this.title = title
         this.content = content
-        this.user_id = user
+        this.user = user
     }
 
     fun update(title:String, content:String) {
