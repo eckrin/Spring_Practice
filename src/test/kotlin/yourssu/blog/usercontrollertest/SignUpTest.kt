@@ -13,12 +13,11 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import yourssu.blog.DefaultTest
 import yourssu.blog.dto.req.SignUpRequestDTO
+import yourssu.blog.service.UserService
 
-@AutoConfigureMockMvc
-@SpringBootTest
-//@WebMvcTest
-class SignUpTest {
+class SignUpTest:DefaultTest() {
 
     @BeforeEach
     fun setUp() {
@@ -29,19 +28,18 @@ class SignUpTest {
     private lateinit var mockMvc:MockMvc
     @Autowired
     private lateinit var objectMapper:ObjectMapper
+    @Autowired
+    private lateinit var userService: UserService
 
-    val email = "email@urssu.com"
-    val password = "password"
-    val username = "username"
 
     @Test
-    @DisplayName("회원가입 성공 테스트")
+    @DisplayName("회원가입 성공")
     fun signUpTestSuccess() {
         //given
-        var dto = SignUpRequestDTO(email, password, username)
+        val dto = SignUpRequestDTO(email, password, username)
 
         //when
-        var result = mockMvc.perform(post("/signUp")
+        val result = mockMvc.perform(post("/signUp")
             .content(objectMapper.writeValueAsString(dto))
             .contentType(MediaType.APPLICATION_JSON))
 
@@ -49,6 +47,23 @@ class SignUpTest {
         result.andExpect(status().isOk)
             .andExpect(jsonPath("email").value(email))
             .andExpect(jsonPath("username").value(username))
+    }
+
+    @Test
+    @DisplayName("회원가입 실패 - 중복 이메일")
+    fun signUpTestFailDuplicateEmail() {
+        //given
+        userService.signUp(email, password, username)
+        val dto = SignUpRequestDTO(email, password, username)
+
+        //when
+        val result = mockMvc.perform(post("/signUp")
+            .content(objectMapper.writeValueAsString(dto))
+            .contentType(MediaType.APPLICATION_JSON))
+
+        //then
+        result.andExpect(status().isBadRequest)
+            .andExpect(jsonPath("message").value("중복된 이메일입니다."))
     }
 
 }
