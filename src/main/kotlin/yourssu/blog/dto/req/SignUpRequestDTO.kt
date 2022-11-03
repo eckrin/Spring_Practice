@@ -1,8 +1,6 @@
 package yourssu.blog.dto.req
 
-import lombok.AllArgsConstructor
-import lombok.Getter
-import lombok.NoArgsConstructor
+
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
 
@@ -13,5 +11,7 @@ data class SignUpRequestDTO (
     @field:NotBlank
     var password:String,
     @field:NotBlank
-    var username:String
+    var username:String,
+    @field:NotBlank
+    var role:String
 )
