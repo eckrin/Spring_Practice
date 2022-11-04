@@ -16,18 +16,19 @@ import yourssu.blog.exception.security.InvalidTokenException
 import java.util.*
 import java.util.stream.Collectors
 
+//국제 인터넷 표준화 기구(IETF)에서는 이를 방지하기 위해 Refresh Token도 Access Token과 같은 유효 기간을 가지도록 하여,
+//사용자가 한 번 Refresh Token으로 Access Token을 발급 받았으면, Refresh Token도 다시 발급 받도록 하는 것을 권장하고 있다.
 
 @Component
 class JwtTokenProvider(
-    @Value("#{jwt.secret-key}")
+    @Value("\${jwt.secretkey}")
     val SECRET_KEY:String,
-    @Value("#{jwt.expire-len}")
+    @Value("\${jwt.expirelen}")
     val VALID_TIME:Int
 ) {
-
+    //키값 얻기
     val keyBytes = Decoders.BASE64.decode(SECRET_KEY)
     val key = Keys.hmacShaKeyFor(keyBytes)
-
 
     //jwt토큰을 복호화하여 토큰의 정보를 꺼내기
     fun getAuthentication(accessToken:String): UsernamePasswordAuthenticationToken {
@@ -74,8 +75,8 @@ class JwtTokenProvider(
             .collect(Collectors.joining(","))
 
         var now = Date().time
-        //accessToken 발급
         var expireTime = Date(now+VALID_TIME)
+        //accessToken 발급
         var accessToken = Jwts.builder()
             .setSubject(authentication.name)
             .claim("auth", authorities)
@@ -84,9 +85,11 @@ class JwtTokenProvider(
             .compact()
         //refreshToken 발급 (accessToken의 검증)
         var refreshToken = Jwts.builder()
-            .setExpiration(expireTime)
+            .setExpiration(Date(now+VALID_TIME*10))
             .signWith(key, SignatureAlgorithm.HS256)
             .compact()
+
+        println(accessToken)
 
         return TokenInfo(
             grantType = "Bearer",

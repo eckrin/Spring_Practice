@@ -51,6 +51,7 @@ class UserService {
         var authenticationToken = UsernamePasswordAuthenticationToken(email, password)
         val authentication = authenticationManagerBuilder.`object`.authenticate(authenticationToken)
         val tokenInfo = jwtTokenProvider.generateToken(authentication)
+        user.updateRefreshToken(tokenInfo.refreshToken)
 
         return SignInResponseDTO(user.email!!, user.username!!, user.role!!, tokenInfo.accessToken, tokenInfo.refreshToken)
     }

@@ -33,7 +33,7 @@ class PrincipalDetails(private val user: User):UserDetails {
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         val collectors: MutableCollection<GrantedAuthority> = ArrayList()
         collectors.add(GrantedAuthority {
-            user.role.toString() //ROLE_을 붙여서 리턴해주어야함
+            user.role.toString()
         })
         return collectors
     }

@@ -49,4 +49,8 @@ class User() {
         this.role = Role.valueOf(role)
     }
 
+    fun updateRefreshToken(token:String) {
+        this.refresh_token = token
+    }
+
 }

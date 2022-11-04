@@ -8,7 +8,7 @@ import yourssu.blog.exception.userservice.UserNotFoundException
 import yourssu.blog.repository.UserRepository
 
 @Service
-class PrincipalDetailService:UserDetailsService {
+class PrincipalDetailsService:UserDetailsService {
 
     @Autowired
     private lateinit var userRepository:UserRepository

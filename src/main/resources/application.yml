@@ -1,5 +1,5 @@
 server:
-    port: 8080
+    port: ${SERVER_PORT}
     servlet:
         context-path: /
         encoding:
@@ -22,7 +22,7 @@ spring:
     jpa:
         open-in-view: true
         hibernate:
-            ddl-auto: update
+            ddl-auto: ${DDL_AUTO}
             naming:
                 physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
             use-new-id-generator-mappings: false
@@ -34,5 +34,5 @@ spring:
             fail-on-empty-beans: false
 
 jwt:
-    secret-key: secret-key
-    expire-len: 300000
+    secretkey: ${SECRET_KEY}
+    expirelen: 300000

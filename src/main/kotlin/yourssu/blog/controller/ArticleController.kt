@@ -32,9 +32,4 @@ class ArticleController {
     fun deleteArticle(@PathVariable articleId: Long, @Valid @RequestBody dto:DeleteArticleRequestDTO) {
         return articleService.deleteArticle(articleId, dto.email, dto.password)
     }
-
-    @PostMapping("/visit")
-    fun visitArticle() {
-        return articleService.visit()
-    }
 }
