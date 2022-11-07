@@ -57,5 +57,4 @@ class User() {
     fun updateRefreshToken(token:String) {
         this.refresh_token = token
     }
-
 }

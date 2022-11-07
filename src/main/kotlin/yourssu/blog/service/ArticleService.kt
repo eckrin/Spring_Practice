@@ -1,7 +1,6 @@
 package yourssu.blog.service
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import yourssu.blog.dto.res.CreateArticleResponseDTO
@@ -26,12 +25,12 @@ class ArticleService {
     private lateinit var encoder:BCryptPasswordEncoder
 
     @Transactional
-    fun createArticle(email:String, password:String, title:String, content:String):CreateArticleResponseDTO {
+    fun createArticle(email:String, title:String, content:String):CreateArticleResponseDTO {
         var user = userRepository.findByEmail(email)
         if(user==null)
             throw UserNotFoundException("유저 정보를 찾을 수 없습니다.")
-        if(!encoder.matches(password, user.password))
-            throw PasswordIncorrectException("유효하지 않은 비밀번호입니다.")
+//        if(!encoder.matches(password, user.password))
+//            throw PasswordIncorrectException("유효하지 않은 비밀번호입니다.")
         val article = Article(title, content, user)
         articleRepository.save(article)
 
