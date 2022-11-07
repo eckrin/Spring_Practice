@@ -23,18 +23,35 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	implementation("org.springframework.boot:spring-boot-starter-security")
+	//기본
+	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	runtimeOnly("mysql:mysql-connector-java")
+
+	//시큐리티
+	implementation("org.springframework.boot:spring-boot-starter-security")
+
+	//jwt
+//	implementation("io.jsonwebtoken:jjwt:0.9.1")
+	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+	implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
+	implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
+
+	//디버깅
+	implementation("org.springframework.ldap:spring-ldap-core")
+	implementation("org.springframework.security:spring-security-ldap")
+	implementation("com.unboundid:unboundid-ldapsdk")
+
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+	//유효성 검사
 	implementation("org.springframework.boot:spring-boot-starter-validation")
-	compileOnly("org.projectlombok:lombok")
-	runtimeOnly("mysql:mysql-connector-java")
-//	annotationProcessor("org.projectlombok:lombok") //kotlin+롬복 사용불가..
+	//테스트 관련
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
+
 }
 
 tasks.withType<KotlinCompile> {

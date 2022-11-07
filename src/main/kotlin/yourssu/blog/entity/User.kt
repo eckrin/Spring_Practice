@@ -24,6 +24,12 @@ class User() {
     @NotBlank
     var username: String? = null
 
+    @Column
+    var refresh_token: String? = null
+
+    @Enumerated(EnumType.STRING)
+    var role: Role? = null
+
     @CreationTimestamp
     var created_at:LocalDateTime? = null
 
@@ -36,10 +42,20 @@ class User() {
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     var comments:List<Comment> = ArrayList()
 
-    constructor(email:String, password:String, username:String):this(){
+    constructor(email:String, password:String, username:String, role:String):this(){
         this.email = email
         this.password = password
         this.username = username
+        this.role = Role.valueOf(role)
+    }
+
+    constructor(email:String, role:String):this() {
+        this.email = email
+        this.role = Role.valueOf(role)
+    }
+
+    fun updateRefreshToken(token:String) {
+        this.refresh_token = token
     }
 
 }

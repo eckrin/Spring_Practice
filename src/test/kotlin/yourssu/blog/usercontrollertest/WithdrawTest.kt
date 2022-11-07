@@ -35,7 +35,7 @@ class WithdrawTest:DefaultTest() {
 
     @Test
     @DisplayName("회원탈퇴 성공")
-    fun signUpTestSuccess() {
+    fun WithdrawTestSuccess() {
         //given
         val dto = WithdrawRequestDTO(email, password)
 
@@ -50,7 +50,7 @@ class WithdrawTest:DefaultTest() {
 
     @Test
     @DisplayName("회원탈퇴 실패 - 비밀번호 오류")
-    fun signUpTestFailWrongPwd() {
+    fun WithdrawTestFailWrongPwd() {
         //given
         val dto = WithdrawRequestDTO(email, password+"wrong")
 

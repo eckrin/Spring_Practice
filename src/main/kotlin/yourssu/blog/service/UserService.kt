@@ -1,18 +1,21 @@
 package yourssu.blog.service
 
-import lombok.extern.slf4j.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
+import yourssu.blog.dto.res.SignInResponseDTO
 import yourssu.blog.dto.res.SignUpResponseDTO
+import yourssu.blog.entity.Role
 import yourssu.blog.entity.User
 import yourssu.blog.exception.userservice.EmailExistsException
 import yourssu.blog.exception.userservice.PasswordIncorrectException
 import yourssu.blog.exception.userservice.UserNotFoundException
 import yourssu.blog.repository.UserRepository
+import yourssu.blog.security.JwtTokenProvider
 import javax.transaction.Transactional
 
-@Slf4j
 @Service
 class UserService {
 
@@ -20,17 +23,38 @@ class UserService {
     private lateinit var userRepository: UserRepository
     @Autowired
     private lateinit var encoder: BCryptPasswordEncoder
+//    @Autowired
+//    private lateinit var authenticationManagerBuilder:AuthenticationManagerBuilder
+    @Autowired
+    private lateinit var jwtTokenProvider: JwtTokenProvider
+    val BEARER_LITERAL = "Bearer "
 
     @Transactional
-    fun signUp(email:String, password:String, username:String):SignUpResponseDTO {
+    fun signUp(email:String, password:String, username:String, role:String):SignUpResponseDTO {
         if(userRepository.existsByEmail(email)) {
             throw EmailExistsException("중복된 이메일입니다.")
         }
         userRepository.save(
-            User(email, encoder.encode(password), username)
+            User(email, encoder.encode(password), username, role)
         )
 
-        return SignUpResponseDTO(email, username)
+        return SignUpResponseDTO(email, username, Role.valueOf(role))
+    }
+
+    @Transactional
+    fun signIn(email:String, password:String):SignInResponseDTO {
+        var user = userRepository.findByEmail(email)
+        if(user==null)
+            throw UserNotFoundException("유저 정보를 찾을 수 없습니다.")
+        if(!encoder.matches(password, user.password))
+            throw PasswordIncorrectException("유효하지 않은 비밀번호입니다.")
+
+//        var authenticationToken = UsernamePasswordAuthenticationToken(email, password)
+//        val authentication = authenticationManagerBuilder.`object`.authenticate(authenticationToken)
+        val tokenInfo = jwtTokenProvider.generateToken(user.email!!, user.role!!)
+        user.updateRefreshToken(tokenInfo.refreshToken)
+
+    return SignInResponseDTO(user.email!!, user.username!!, user.role!!, BEARER_LITERAL+tokenInfo.accessToken, BEARER_LITERAL+tokenInfo.refreshToken)
     }
 
     @Transactional
