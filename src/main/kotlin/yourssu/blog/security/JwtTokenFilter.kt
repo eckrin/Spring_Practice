@@ -15,10 +15,9 @@ class JwtTokenFilter(private var jwtTokenProvider: JwtTokenProvider):OncePerRequ
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        println("JwtTokenFilter:fun doFilterInternal")
         var token = resolveToken(request)
         if(jwtTokenProvider.validateToken(token)) { //토큰 유효성 확인
-            val authentication = jwtTokenProvider.getAuthentication(token)
+            val authentication = jwtTokenProvider.getAuthentication(token) //권한 정보 확인(email, role)
             SecurityContextHolder.getContext().authentication = authentication
         }
         filterChain.doFilter(request, response)
@@ -26,7 +25,6 @@ class JwtTokenFilter(private var jwtTokenProvider: JwtTokenProvider):OncePerRequ
 
     private fun resolveToken(request:HttpServletRequest): String {
         var bearerToken = request.getHeader("Authorization")
-        println("JwtTokenFilter:fun resolveToken")
         if(bearerToken==null) {
             println("JwtTokenFilter:bearerToken null")
             throw EmptyHeaderAuthorizationException("Authorization 헤더에 토큰이 없습니다.")

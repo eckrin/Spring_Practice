@@ -5,13 +5,12 @@ import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
-import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Component
 import yourssu.blog.config.auth.PrincipalDetails
+import yourssu.blog.entity.Role
 import yourssu.blog.exception.security.InvalidTokenException
 import java.util.*
 import java.util.stream.Collectors
@@ -34,32 +33,35 @@ class JwtTokenProvider(
     fun getAuthentication(accessToken:String): UsernamePasswordAuthenticationToken {
         var claims = parseClaims(accessToken)
 
-        if(claims.get("auth")==null)
-            throw InvalidTokenException("Invalid JWT Token")
+        if(claims.get("email")==null || claims.get("ROLE_")==null)
+            throw InvalidTokenException("Invalid JWT Token (Cannot get Email|Role)")
 
-        // 클레임에서 권한 정보 가져오기
+        // 클레임에서 권한 정보(role) 가져오기
         val authorities: Collection<GrantedAuthority?> =
-            Arrays.stream(claims.get("auth").toString().split(",".toRegex()).dropLastWhile { it.isEmpty() }
+            Arrays.stream(claims.get("ROLE_").toString().split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 .toTypedArray())
                 .map { role: String? -> SimpleGrantedAuthority(role) }
                 .collect(Collectors.toList())
 
-        // UserDetails 객체를 만들어서 Authentication 리턴
-        var principal = User(claims.subject, "", authorities)
-        return UsernamePasswordAuthenticationToken(principal, "", authorities)
+        // User객체를 만들어서 Authentication 리턴
+//        var principal = PrincipalDetails(yourssu.blog.entity.User(claims.get("email").toString(), "", claims.get("role").toString()))
+        if(claims.subject==null)
+            println("A")
+        var user = User(claims.get("email") as String, "", authorities)
+        return UsernamePasswordAuthenticationToken(user, "", user.authorities)
     }
 
     //토큰 정보 검증
-    fun validateToken(token:String): Boolean {
+    fun validateToken(accessToken: String): Boolean {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token)
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken)
             return true
         } catch (e:SecurityException) {
             throw InvalidTokenException("Invalid JWT Token")
         } catch (e:MalformedJwtException) {
-            throw InvalidTokenException("Invalid JWT Token")
+            throw InvalidTokenException("Invalid JWT Token (Malformed)")
         } catch (e:ExpiredJwtException) {
-            throw InvalidTokenException("Expired JWT Token")
+            throw InvalidTokenException("Expired JWT Token (Expired)")
         } catch (e:UnsupportedJwtException) {
             throw InvalidTokenException("Unsupported JWT Token")
         } catch (e:IllegalArgumentException) {
@@ -68,23 +70,27 @@ class JwtTokenProvider(
     }
 
     //유저 정보 기반으로 accessToken, refreshToken 생성
-    fun generateToken(authentication:Authentication): TokenInfo {
+    fun generateToken(email:String, role:Role): TokenInfo {
         //권한 가져오기
-        var authorities = authentication.authorities.stream()
-            .map(GrantedAuthority::getAuthority)
-            .collect(Collectors.joining(","))
+//        var authorities = authentication.authorities.stream()
+//            .map(GrantedAuthority::getAuthority)
+//            .collect(Collectors.joining(","))
 
         var now = Date().time
         var expireTime = Date(now+VALID_TIME)
         //accessToken 발급
         var accessToken = Jwts.builder()
-            .setSubject(authentication.name)
-            .claim("auth", authorities)
+//            .setSubject(authentication.name)
+            .claim("email", email)
+            .claim("ROLE_", role)
             .setExpiration(expireTime)
             .signWith(key, SignatureAlgorithm.HS256)
             .compact()
         //refreshToken 발급 (accessToken의 검증)
         var refreshToken = Jwts.builder()
+//            .setSubject(authentication.name)
+            .claim("email", email)
+            .claim("ROLE_", role)
             .setExpiration(Date(now+VALID_TIME*10))
             .signWith(key, SignatureAlgorithm.HS256)
             .compact()

@@ -26,10 +26,10 @@ class WebSecurityConfig {
     @Autowired
     private lateinit var jwtTokenProvider: JwtTokenProvider
 
-    @Bean
-    fun authenticationManager(authenticationConfiguration: AuthenticationConfiguration): AuthenticationManager? {
-        return authenticationConfiguration.authenticationManager
-    }
+//    @Bean
+//    fun authenticationManager(authenticationConfiguration: AuthenticationConfiguration): AuthenticationManager? {
+//        return authenticationConfiguration.authenticationManager
+//    }
 
     @Bean
     fun passwordEncoder(): BCryptPasswordEncoder {

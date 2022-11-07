@@ -49,6 +49,11 @@ class User() {
         this.role = Role.valueOf(role)
     }
 
+    constructor(email:String, role:String):this() {
+        this.email = email
+        this.role = Role.valueOf(role)
+    }
+
     fun updateRefreshToken(token:String) {
         this.refresh_token = token
     }

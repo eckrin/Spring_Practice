@@ -23,10 +23,11 @@ class UserService {
     private lateinit var userRepository: UserRepository
     @Autowired
     private lateinit var encoder: BCryptPasswordEncoder
-    @Autowired
-    private lateinit var authenticationManagerBuilder:AuthenticationManagerBuilder
+//    @Autowired
+//    private lateinit var authenticationManagerBuilder:AuthenticationManagerBuilder
     @Autowired
     private lateinit var jwtTokenProvider: JwtTokenProvider
+    val BEARER_LITERAL = "Bearer "
 
     @Transactional
     fun signUp(email:String, password:String, username:String, role:String):SignUpResponseDTO {
@@ -48,12 +49,12 @@ class UserService {
         if(!encoder.matches(password, user.password))
             throw PasswordIncorrectException("유효하지 않은 비밀번호입니다.")
 
-        var authenticationToken = UsernamePasswordAuthenticationToken(email, password)
-        val authentication = authenticationManagerBuilder.`object`.authenticate(authenticationToken)
-        val tokenInfo = jwtTokenProvider.generateToken(authentication)
+//        var authenticationToken = UsernamePasswordAuthenticationToken(email, password)
+//        val authentication = authenticationManagerBuilder.`object`.authenticate(authenticationToken)
+        val tokenInfo = jwtTokenProvider.generateToken(user.email!!, user.role!!)
         user.updateRefreshToken(tokenInfo.refreshToken)
 
-        return SignInResponseDTO(user.email!!, user.username!!, user.role!!, tokenInfo.accessToken, tokenInfo.refreshToken)
+    return SignInResponseDTO(user.email!!, user.username!!, user.role!!, BEARER_LITERAL+tokenInfo.accessToken, BEARER_LITERAL+tokenInfo.refreshToken)
     }
 
     @Transactional
