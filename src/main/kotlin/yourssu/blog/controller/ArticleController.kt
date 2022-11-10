@@ -20,7 +20,9 @@ class ArticleController {
     private lateinit var articleService:ArticleService
 
     @PostMapping("/create")
-    fun createArticle(@Valid @RequestBody dto:CreateArticleRequestDTO, @AuthenticationPrincipal user:UserDetails):CreateArticleResponseDTO { //UserDetailsService에서 리턴한값을 받아서 사용할 수 있다.
+    // @AuthenticatedPrincipal로 UserDetailsService에서 리턴한값을 받아서 사용할 수 있다.
+    // UserDetails가 아니라 PrincipalDetails로 놓으면 어노테이션이 작동안하는거같은데 이게 PrincipalDetails가 작동을 안하는건지 아니면 받아오는것만 그런건지 모르겠다.
+    fun createArticle(@Valid @RequestBody dto:CreateArticleRequestDTO, @AuthenticationPrincipal user:UserDetails):CreateArticleResponseDTO {
 //        println("test:"+user.toString())
         return articleService.createArticle(user.username, dto.title, dto.content)
     }
