@@ -1,11 +1,8 @@
 package yourssu.blog.controller
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.*
 import yourssu.blog.dto.req.CreateArticleRequestDTO
-import yourssu.blog.dto.req.DeleteArticleRequestDTO
 import yourssu.blog.dto.req.UpdateArticleRequestDTO
 import yourssu.blog.dto.res.CreateArticleResponseDTO
 import yourssu.blog.dto.res.UpdateArticleResponseDTO
@@ -36,12 +33,12 @@ class ArticleController {
     }
 
     @PostMapping("/update/{articleId}")
-    fun updateArticle(@PathVariable articleId:Long, @Valid @RequestBody dto:UpdateArticleRequestDTO):UpdateArticleResponseDTO {
-        return articleService.updateArticle(articleId, dto.email, dto.password, dto.title, dto.content)
+    fun updateArticle(@PathVariable articleId:Long, @Valid @RequestBody dto:UpdateArticleRequestDTO, @Auth authInfo: AuthInfo):UpdateArticleResponseDTO {
+        return articleService.updateArticle(articleId, authInfo.email, dto.title, dto.content)
     }
 
     @PostMapping("/delete/{articleId}")
-    fun deleteArticle(@PathVariable articleId: Long, @Valid @RequestBody dto:DeleteArticleRequestDTO) {
-        return articleService.deleteArticle(articleId, dto.email, dto.password)
+    fun deleteArticle(@PathVariable articleId: Long, @Auth authInfo: AuthInfo) {
+        return articleService.deleteArticle(articleId, authInfo.email)
     }
 }

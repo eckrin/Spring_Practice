@@ -38,12 +38,12 @@ class ArticleService {
     }
 
     @Transactional
-    fun updateArticle(articleId:Long, email: String, password: String, title: String, content: String): UpdateArticleResponseDTO {
+    fun updateArticle(articleId:Long, email: String, title: String, content: String): UpdateArticleResponseDTO {
         var user = userRepository.findByEmail(email)
         if(user==null)
             throw UserNotFoundException("유저 정보를 찾을 수 없습니다.")
-        if(!encoder.matches(password, user.password))
-            throw PasswordIncorrectException("유효하지 않은 비밀번호입니다.")
+//        if(!encoder.matches(password, user.password))
+//            throw PasswordIncorrectException("유효하지 않은 비밀번호입니다.")
 
 
         lateinit var article:Article
@@ -60,12 +60,12 @@ class ArticleService {
     }
 
     @Transactional
-    fun deleteArticle(articleId: Long, email: String, password: String) {
+    fun deleteArticle(articleId: Long, email: String) {
         var user = userRepository.findByEmail(email)
         if(user==null)
             throw UserNotFoundException("유저 정보를 찾을 수 없습니다.")
-        if(!encoder.matches(password, user.password))
-            throw PasswordIncorrectException("유효하지 않은 비밀번호입니다.")
+//        if(!encoder.matches(password, user.password))
+//            throw PasswordIncorrectException("유효하지 않은 비밀번호입니다.")
 
         lateinit var article:Article
         try {

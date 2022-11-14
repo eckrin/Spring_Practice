@@ -3,13 +3,13 @@ package yourssu.blog.controller
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import yourssu.blog.dto.req.SignInRequestDTO
 import yourssu.blog.dto.req.SignUpRequestDTO
-import yourssu.blog.dto.req.WithdrawRequestDTO
 import yourssu.blog.dto.res.SignInResponseDTO
 import yourssu.blog.dto.res.SignUpResponseDTO
+import yourssu.blog.security.Auth
+import yourssu.blog.security.AuthInfo
 import yourssu.blog.service.UserService
 import javax.validation.Valid
 
@@ -30,7 +30,7 @@ class UserController {
     }
 
     @PostMapping("/withdraw")
-    fun withdraw(@Valid @RequestBody dto:WithdrawRequestDTO) {
-        return userService.withdraw(dto.email, dto.password)
+    fun withdraw(@Auth authInfo: AuthInfo) {
+        return userService.withdraw(authInfo.email)
     }
 }

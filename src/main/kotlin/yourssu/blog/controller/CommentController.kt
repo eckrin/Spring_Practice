@@ -8,6 +8,8 @@ import yourssu.blog.dto.res.CreateArticleResponseDTO
 import yourssu.blog.dto.res.CreateCommentResponseDTO
 import yourssu.blog.dto.res.UpdateArticleResponseDTO
 import yourssu.blog.dto.res.UpdateCommentResponseDTO
+import yourssu.blog.security.Auth
+import yourssu.blog.security.AuthInfo
 import yourssu.blog.service.ArticleService
 import yourssu.blog.service.CommentService
 import javax.validation.Valid
@@ -20,17 +22,17 @@ class CommentController {
     private lateinit var commentService: CommentService
 
     @PostMapping("/create/{articleId}")
-    fun createComment(@PathVariable articleId:Long, @Valid @RequestBody dto:CreateCommentRequestDTO):CreateCommentResponseDTO {
-        return commentService.createComment(articleId, dto.email, dto.password, dto.content)
+    fun createComment(@PathVariable articleId:Long, @Valid @RequestBody dto:CreateCommentRequestDTO, @Auth authInfo: AuthInfo):CreateCommentResponseDTO {
+        return commentService.createComment(articleId, authInfo.email, dto.content)
     }
 
     @PostMapping("/update/{articleId}/{commentId}")
-    fun updateComment(@PathVariable articleId:Long, @PathVariable commentId:Long, @Valid @RequestBody dto:UpdateCommentRequestDTO):UpdateCommentResponseDTO {
-        return commentService.updateComment(articleId, commentId, dto.email, dto.password, dto.content)
+    fun updateComment(@PathVariable articleId:Long, @PathVariable commentId:Long, @Valid @RequestBody dto:UpdateCommentRequestDTO, @Auth authInfo: AuthInfo):UpdateCommentResponseDTO {
+        return commentService.updateComment(articleId, commentId, authInfo.email, dto.content)
     }
 
     @PostMapping("/delete/{articleId}/{commentId}")
-    fun deleteComment(@PathVariable articleId: Long, @PathVariable commentId: Long, @Valid @RequestBody dto:DeleteCommentRequestDTO) {
-        return commentService.deleteComment(articleId, commentId, dto.email, dto.password)
+    fun deleteComment(@PathVariable articleId: Long, @PathVariable commentId: Long, @Auth authInfo: AuthInfo) {
+        return commentService.deleteComment(articleId, commentId, authInfo.email)
     }
 }

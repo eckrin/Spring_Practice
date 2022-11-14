@@ -37,4 +37,4 @@ spring:
 
 jwt:
     secretkey: ${SECRET_KEY}
-    expirelen: 300000
+    expirelen: ${EXPIRE_LEN}
