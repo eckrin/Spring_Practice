@@ -9,7 +9,6 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Component
-import yourssu.blog.config.auth.PrincipalDetails
 import yourssu.blog.entity.Role
 import yourssu.blog.exception.security.InvalidTokenException
 import java.util.*
@@ -45,8 +44,6 @@ class JwtTokenProvider(
 
         // User객체를 만들어서 Authentication 리턴
 //        var principal = PrincipalDetails(yourssu.blog.entity.User(claims.get("email").toString(), "", claims.get("role").toString()))
-        if(claims.subject==null)
-            println("A")
         var user = User(claims.get("email") as String, "", authorities)
         return UsernamePasswordAuthenticationToken(user, "", user.authorities)
     }

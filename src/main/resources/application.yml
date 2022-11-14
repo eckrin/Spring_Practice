@@ -13,6 +13,8 @@ spring:
             prefix: /WEB-INF/views/
             suffix: .jsp
         #throw-exception-if-no-handler-found: true #404에러 캐치
+        pathmatch:
+            matching-strategy: ant_path_matcher #swagger 3.0 적용 오류 해결
     datasource:
         driver-class-name: com.mysql.cj.jdbc.Driver
         url: ${DB_URL}
@@ -35,4 +37,4 @@ spring:
 
 jwt:
     secretkey: ${SECRET_KEY}
-    expirelen: 300000
+    expirelen: ${EXPIRE_LEN}

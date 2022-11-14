@@ -30,13 +30,13 @@ class CommentService {
     lateinit var commentRepository: CommentRepository
 
     @Transactional
-    fun createComment(articleId:Long, email:String, password:String, content:String):CreateCommentResponseDTO {
+    fun createComment(articleId:Long, email:String, content:String):CreateCommentResponseDTO {
         var user = userRepository.findByEmail(email)
         lateinit var article:Article
         if(user==null)
             throw UserNotFoundException("유저 정보를 찾을 수 없습니다.")
-        if(!encoder.matches(password, user.password))
-            throw PasswordIncorrectException("유효하지 않은 비밀번호입니다.")
+//        if(!encoder.matches(password, user.password))
+//            throw PasswordIncorrectException("유효하지 않은 비밀번호입니다.")
         try {
             article = articleRepository.findById(articleId).orElse(null)
 
@@ -51,7 +51,7 @@ class CommentService {
     }
 
     @Transactional
-    fun updateComment(articleId: Long, commentId:Long, email:String, password:String, content:String):UpdateCommentResponseDTO {
+    fun updateComment(articleId: Long, commentId:Long, email:String, content:String):UpdateCommentResponseDTO {
         lateinit var article:Article
         lateinit var comment:Comment
         try {
@@ -71,8 +71,8 @@ class CommentService {
         var user = userRepository.findByEmail(email)
         if(user==null)
             throw UserNotFoundException("유저 정보를 찾을 수 없습니다.")
-        if(!encoder.matches(password, user.password))
-            throw PasswordIncorrectException("유효하지 않은 비밀번호입니다.")
+//        if(!encoder.matches(password, user.password))
+//            throw PasswordIncorrectException("유효하지 않은 비밀번호입니다.")
         if(comment.user!!.email!=user.email)
             throw NoPermissionException("댓글 수정 권한이 없습니다.") //댓글 작성자만 수정 가능
         if(comment.article!!.article_id!=articleId)
@@ -83,7 +83,7 @@ class CommentService {
     }
 
     @Transactional
-    fun deleteComment(articleId: Long, commentId: Long, email: String, password: String) {
+    fun deleteComment(articleId: Long, commentId: Long, email: String) {
         lateinit var article:Article
         lateinit var comment:Comment
         try {
@@ -103,8 +103,8 @@ class CommentService {
         var user = userRepository.findByEmail(email)
         if(user==null)
             throw UserNotFoundException("유저 정보를 찾을 수 없습니다.")
-        if(!encoder.matches(password, user.password))
-            throw PasswordIncorrectException("유효하지 않은 비밀번호입니다.")
+//        if(!encoder.matches(password, user.password))
+//            throw PasswordIncorrectException("유효하지 않은 비밀번호입니다.")
         if(comment.user!!.email!=user.email || article.user!!.email!=user.email)
             throw NoPermissionException("댓글 삭제 권한이 없습니다.") //댓글 작성자, 글 작성자만 삭제 가능
         if(comment.article!!.article_id!=articleId)

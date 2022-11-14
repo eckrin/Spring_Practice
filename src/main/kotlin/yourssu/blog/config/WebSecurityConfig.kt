@@ -47,7 +47,7 @@ class WebSecurityConfig {
             //이럻게 하면 필터 제외 안돼서 밑에 WebSecurityCustomiszer Bean 이용
 //            .antMatchers("/signUp/**", "/signIn/**").permitAll()
 //            .anyRequest().authenticated()
-            .anyRequest().permitAll()
+            .anyRequest().authenticated()
             .and()
             .addFilterBefore(JwtTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter::class.java) //AuthenticationFilter전에 JwtToken필터 실행
             .addFilterBefore(ExceptionHandlerFilter(), JwtTokenFilter::class.java) //필터에서 발생한 Exception 처리
@@ -58,7 +58,13 @@ class WebSecurityConfig {
 
     @Bean
     fun webSecurityCustomizer(): WebSecurityCustomizer? {
-        return WebSecurityCustomizer { web: WebSecurity -> web.ignoring().antMatchers("/signIn/**", "/signUp/**") }
+        return WebSecurityCustomizer { web: WebSecurity -> web.ignoring().antMatchers(
+            "/signIn/**",
+            "/signUp/**",
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-resources/**"
+        )}
     }
 
     @Bean

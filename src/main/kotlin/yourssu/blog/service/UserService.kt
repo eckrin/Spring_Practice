@@ -27,6 +27,7 @@ class UserService {
 //    private lateinit var authenticationManagerBuilder:AuthenticationManagerBuilder
     @Autowired
     private lateinit var jwtTokenProvider: JwtTokenProvider
+
     val BEARER_LITERAL = "Bearer "
 
     @Transactional
@@ -58,14 +59,14 @@ class UserService {
     }
 
     @Transactional
-    fun withdraw(email: String, password: String) {
+    fun withdraw(email: String) {
         var user = userRepository.findByEmail(email)
         if(user==null) {
             throw UserNotFoundException("해당 유저가 존재하지 않습니다.")
         }
-        if(!encoder.matches(password, user.password)) {
-            throw PasswordIncorrectException("비밀번호가 틀립니다.")
-        }
+//        if(!encoder.matches(password, user.password)) {
+//            throw PasswordIncorrectException("비밀번호가 틀립니다.")
+//        }
         userRepository.deleteById(user.user_id)
     }
 }
