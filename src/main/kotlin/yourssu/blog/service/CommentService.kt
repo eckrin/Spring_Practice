@@ -52,11 +52,9 @@ class CommentService {
 
     @Transactional
     fun updateComment(articleId: Long, commentId:Long, email:String, content:String):UpdateCommentResponseDTO {
-        lateinit var article:Article
         lateinit var comment:Comment
         try {
-            article = articleRepository.findById(articleId).orElse(null)
-
+            articleRepository.findById(articleId).orElse(null)
         } catch(e:Exception) {
             throw ArticleNotFoundException("게시글 정보를 찾을 수 없습니다.")
         }

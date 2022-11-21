@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository
 import yourssu.blog.entity.User
 
 @Repository
-interface UserRepository:JpaRepository<User, Long> {
+interface UserRepository:JpaRepository<User, Long>, UserCustomRepository {
     fun findByEmail(email:String?): User?
     fun existsByEmail(email:String):Boolean
 }

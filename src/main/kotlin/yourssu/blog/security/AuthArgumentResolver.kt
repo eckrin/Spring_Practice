@@ -10,6 +10,7 @@ import org.springframework.web.method.support.ModelAndViewContainer
 
 class AuthArgumentResolver:HandlerMethodArgumentResolver {
 
+    //대상이 되는 파라미터를 정의
     override fun supportsParameter(parameter: MethodParameter): Boolean {
         return parameter.hasParameterAnnotation(Auth::class.java)
                 && parameter.parameterType == AuthInfo::class.java
