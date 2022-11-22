@@ -11,6 +11,7 @@ import yourssu.blog.dto.req.SignUpRequestDTO
 import yourssu.blog.dto.res.ShowResponseDTO
 import yourssu.blog.dto.res.SignInResponseDTO
 import yourssu.blog.dto.res.SignUpResponseDTO
+import yourssu.blog.entity.User
 import yourssu.blog.security.Auth
 import yourssu.blog.security.AuthInfo
 import yourssu.blog.service.UserService
@@ -39,13 +40,14 @@ class UserController {
     }
 
     @GetMapping("/show")
-    fun show(@RequestParam(required = false) username: String,
-             @RequestParam(required = false) email: String,
-             @RequestParam(required = false) createdAtStart: String,
-             @RequestParam(required = false) createdAtEnd: String,
-             @RequestParam(required = false) updatedAtStart: String,
-             @RequestParam(required = false) updatedAtEnd: String,
-             @Auth authInfo: AuthInfo): ShowResponseDTO {
+    fun show(@RequestParam(required = false) username: String?,
+             @RequestParam(required = false) email: String?,
+             @RequestParam(required = false) createdAtStart: String?,
+             @RequestParam(required = false) createdAtEnd: String?,
+             @RequestParam(required = false) updatedAtStart: String?,
+             @RequestParam(required = false) updatedAtEnd: String?,
+             @Auth authInfo: AuthInfo): List<ShowResponseDTO> {
+
         return userService.show(authInfo.email, username, email, createdAtStart, createdAtEnd, updatedAtStart, updatedAtEnd)
     }
 }

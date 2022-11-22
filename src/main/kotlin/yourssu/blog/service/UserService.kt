@@ -15,6 +15,7 @@ import yourssu.blog.exception.userservice.PasswordIncorrectException
 import yourssu.blog.exception.userservice.UserNotFoundException
 import yourssu.blog.repository.UserRepository
 import yourssu.blog.security.JwtTokenProvider
+import java.util.stream.Collectors
 import javax.transaction.Transactional
 
 @Service
@@ -72,12 +73,24 @@ class UserService {
     }
 
     @Transactional
-    fun show(adminEmail: String, username:String, userEmail:String, createdAtStart:String, createdAtEnd:String, updatedAtStart:String, updatedAtEnd:String): ShowResponseDTO {
+    fun show(adminEmail: String,
+             username:String?,
+             userEmail:String?,
+             createdAtStart:String?,
+             createdAtEnd:String?,
+             updatedAtStart:String?,
+             updatedAtEnd:String?): List<ShowResponseDTO> {
+
         val user = userRepository.findByEmail(adminEmail)
         if(user==null)
             throw UserNotFoundException("ADMIN 정보를 찾을 수 없습니다.")
 
-        val userList = userRepository.searchAll()
-        return ShowResponseDTO(user.user_id, user.email!!, user.username!!, user.role!!, user.created_at.toString(), user.updated_at.toString())
+        val userList = userRepository.searchAll().stream()
+            .map { user->ShowResponseDTO(user.user_id, user.email, user.username, user.role, user.created_at.toString(), user.updated_at.toString()) }
+            .collect(Collectors.toList())
+
+
+
+        return userList
     }
 }
