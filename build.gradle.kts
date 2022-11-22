@@ -6,6 +6,7 @@ plugins {
 	kotlin("jvm") version "1.6.21"
 	kotlin("plugin.spring") version "1.6.21"
 	kotlin("plugin.jpa") version "1.6.21"
+	kotlin("kapt") version "1.6.21" //Querydsl
 }
 
 group = "yourssu"
@@ -54,6 +55,12 @@ dependencies {
 
 	implementation("io.springfox:springfox-boot-starter:3.0.0")
 //	implementation("io.springfox:springfox-swagger-ui:3.0.0")
+
+	//querydsl
+	implementation ("com.querydsl:querydsl-jpa:5.0.0")
+	annotationProcessor ("javax.persistence:javax.persistence-api")
+	annotationProcessor ("javax.annotation:javax.annotation-api")
+//	annotationProcessor ("com.querydsl:querydsl-apt:4.4.0:jpa") //이것때문에 컴파일러 에러 발생
 }
 
 tasks.withType<KotlinCompile> {
