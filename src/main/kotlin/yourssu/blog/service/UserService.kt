@@ -1,8 +1,6 @@
 package yourssu.blog.service
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import yourssu.blog.dto.res.ShowResponseDTO
@@ -15,6 +13,7 @@ import yourssu.blog.exception.userservice.PasswordIncorrectException
 import yourssu.blog.exception.userservice.UserNotFoundException
 import yourssu.blog.repository.UserRepository
 import yourssu.blog.security.JwtTokenProvider
+import java.time.LocalDate
 import java.util.stream.Collectors
 import javax.transaction.Transactional
 
@@ -76,21 +75,62 @@ class UserService {
     fun show(adminEmail: String,
              username:String?,
              userEmail:String?,
-             createdAtStart:String?,
-             createdAtEnd:String?,
-             updatedAtStart:String?,
-             updatedAtEnd:String?): List<ShowResponseDTO> {
+             createdAtStart: LocalDate?,
+             createdAtEnd:LocalDate?,
+             updatedAtStart:LocalDate?,
+             updatedAtEnd:LocalDate?): List<ShowResponseDTO> {
 
         val user = userRepository.findByEmail(adminEmail)
         if(user==null)
             throw UserNotFoundException("ADMIN 정보를 찾을 수 없습니다.")
 
-        val userList = userRepository.searchAll().stream()
-            .map { user->ShowResponseDTO(user.user_id, user.email, user.username, user.role, user.created_at.toString(), user.updated_at.toString()) }
-            .collect(Collectors.toList())
+        lateinit var userList: List<ShowResponseDTO>
 
+        //모든 유저의 정보 출력
+        if(username==null && userEmail==null) {
+            println("hey:"+createdAtStart)
+            userList = userRepository.searchAllUser(createdAtStart, createdAtEnd).stream()
+                .map { user ->
+                    ShowResponseDTO(
+                        user.user_id,
+                        user.email,
+                        user.username,
+                        user.role,
+                        user.created_at.toString(),
+                        user.updated_at.toString()
+                    )
+                }
+                .collect(Collectors.toList())
+        }
+        else if(username==null) {
+            userList = userRepository.searchAllUserByEmail(userEmail!!, createdAtStart, createdAtEnd).stream()
+                .map { user ->
+                    ShowResponseDTO(
+                        user.user_id,
+                        user.email,
+                        user.username,
+                        user.role,
+                        user.created_at.toString(),
+                        user.updated_at.toString()
+                    )
+                }
+                .collect(Collectors.toList())
+        }
+        else if(userEmail==null) {
+            userList = userRepository.searchAllUserByUsername(username, createdAtStart, createdAtEnd).stream()
+                .map { user ->
+                    ShowResponseDTO(
+                        user.user_id,
+                        user.email,
+                        user.username,
+                        user.role,
+                        user.created_at.toString(),
+                        user.updated_at.toString()
+                    )
+                }
+                .collect(Collectors.toList())
+        }
 
-
-        return userList
+        return userList //User리스트로 변환하여 리턴
     }
 }

@@ -1,6 +1,8 @@
 package yourssu.blog.controller
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.format.annotation.DateTimeFormat
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -15,6 +17,7 @@ import yourssu.blog.entity.User
 import yourssu.blog.security.Auth
 import yourssu.blog.security.AuthInfo
 import yourssu.blog.service.UserService
+import java.time.LocalDate
 import javax.validation.Valid
 import javax.validation.constraints.Email
 
@@ -39,15 +42,17 @@ class UserController {
         return userService.withdraw(authInfo.email)
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/show")
     fun show(@RequestParam(required = false) username: String?,
              @RequestParam(required = false) email: String?,
-             @RequestParam(required = false) createdAtStart: String?,
-             @RequestParam(required = false) createdAtEnd: String?,
-             @RequestParam(required = false) updatedAtStart: String?,
-             @RequestParam(required = false) updatedAtEnd: String?,
-             @Auth authInfo: AuthInfo): List<ShowResponseDTO> {
-
+             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") createdAtStart: LocalDate?,
+             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") createdAtEnd: LocalDate?,
+             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") updatedAtStart: LocalDate?,
+             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") updatedAtEnd: LocalDate?,
+             @Auth authInfo: AuthInfo): List<ShowResponseDTO>
+    {
+        println("work?")
         return userService.show(authInfo.email, username, email, createdAtStart, createdAtEnd, updatedAtStart, updatedAtEnd)
     }
 }

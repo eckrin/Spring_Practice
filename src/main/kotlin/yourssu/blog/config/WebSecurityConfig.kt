@@ -3,8 +3,10 @@ package yourssu.blog.config
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -21,6 +23,7 @@ import yourssu.blog.security.JwtTokenProvider
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 class WebSecurityConfig {
 
     @Autowired
@@ -37,6 +40,7 @@ class WebSecurityConfig {
     }
 
     @Bean
+    //httpsecurity: allow configuring web-based security
     fun filterChain(http:HttpSecurity):SecurityFilterChain {
         http
             .httpBasic().disable()
@@ -47,6 +51,8 @@ class WebSecurityConfig {
             //이럻게 하면 필터 제외 안돼서 밑에 WebSecurityCustomiszer Bean 이용
 //            .antMatchers("/signUp/**", "/signIn/**").permitAll()
 //            .anyRequest().authenticated()
+            //이것도 적용되지 않음
+//            .antMatchers(HttpMethod.GET,"/show").hasRole("ADMIN")
             .anyRequest().authenticated()
             .and()
             .addFilterBefore(JwtTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter::class.java) //AuthenticationFilter전에 JwtToken필터 실행
@@ -57,6 +63,7 @@ class WebSecurityConfig {
     }
 
     @Bean
+    //websecurity: configuring that have global effect of web security
     fun webSecurityCustomizer(): WebSecurityCustomizer? {
         return WebSecurityCustomizer { web: WebSecurity -> web.ignoring().antMatchers(
             "/signIn/**",
