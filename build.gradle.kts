@@ -60,7 +60,15 @@ dependencies {
 	implementation ("com.querydsl:querydsl-jpa:5.0.0")
 	annotationProcessor ("javax.persistence:javax.persistence-api")
 	annotationProcessor ("javax.annotation:javax.annotation-api")
-//	annotationProcessor ("com.querydsl:querydsl-apt:4.4.0:jpa") //이것때문에 컴파일러 에러 발생
+	annotationProcessor ("com.querydsl:querydsl-apt:5.0.0:jpa") //이것때문에 컴파일러 에러 발생
+
+	api("com.querydsl:querydsl-jpa")
+	kapt(group = "com.querydsl", name = "querydsl-apt", classifier = "jpa")
+}
+
+//querydsl
+sourceSets["main"].withConvention(org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet::class) {
+	kotlin.srcDir("$buildDir/generated/source/kapt/main")
 }
 
 tasks.withType<KotlinCompile> {
