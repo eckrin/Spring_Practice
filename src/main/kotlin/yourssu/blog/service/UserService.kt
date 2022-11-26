@@ -88,7 +88,6 @@ class UserService {
 
         //모든 유저의 정보 출력
         if(username==null && userEmail==null) {
-            println("hey:"+createdAtStart)
             userList = userRepository.searchAllUser(createdAtStart, createdAtEnd).stream()
                 .map { user ->
                     ShowResponseDTO(

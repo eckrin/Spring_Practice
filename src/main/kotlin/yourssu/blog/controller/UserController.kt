@@ -1,6 +1,8 @@
 package yourssu.blog.controller
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PageableDefault
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
@@ -52,7 +54,6 @@ class UserController {
              @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") updatedAtEnd: LocalDate?,
              @Auth authInfo: AuthInfo): List<ShowResponseDTO>
     {
-        println("work?")
         return userService.show(authInfo.email, username, email, createdAtStart, createdAtEnd, updatedAtStart, updatedAtEnd)
     }
 }

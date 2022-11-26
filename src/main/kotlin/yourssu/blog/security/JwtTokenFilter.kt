@@ -26,7 +26,7 @@ class JwtTokenFilter(private var jwtTokenProvider: JwtTokenProvider):OncePerRequ
     private fun resolveToken(request:HttpServletRequest): String {
         var bearerToken = request.getHeader("Authorization")
         if(bearerToken==null) {
-            println("JwtTokenFilter:bearerToken null")
+//            println("JwtTokenFilter:bearerToken null")
             throw EmptyHeaderAuthorizationException("Authorization 헤더에 토큰이 없습니다.")
         }
         return bearerToken

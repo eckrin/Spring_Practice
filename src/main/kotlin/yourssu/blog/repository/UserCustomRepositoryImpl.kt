@@ -3,6 +3,7 @@ package yourssu.blog.repository
 import com.querydsl.core.BooleanBuilder
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
 import yourssu.blog.entity.QUser
 import yourssu.blog.entity.Role
@@ -19,13 +20,12 @@ class UserCustomRepositoryImpl:UserCustomRepository {
 
     val user = QUser("user")
 
-    override fun searchAllUser(createdAtStart: LocalDate?, createdAtEnd: LocalDate?):List<User> {
+    override fun searchAllUser(email:String, createdAtStart: LocalDate?, createdAtEnd: LocalDate?):List<User> {
 
         val builder = BooleanBuilder()
 
         //createdAtStart와 createdAtEnd 사이의 경우
         if(createdAtStart!=null && createdAtEnd!=null) {
-            println("AAA")
             builder.and(user.created_at.between(
                 createdAtStart.atStartOfDay(), //하루 시작시간
                 LocalDateTime.of(createdAtEnd, LocalTime.MAX).withNano(0) //하루 끝
@@ -33,14 +33,12 @@ class UserCustomRepositoryImpl:UserCustomRepository {
         }
         //createdAtStart 이전에 생성된 경우만
         else if(createdAtStart!=null) {
-            println("BBB")
             builder.and(user.created_at.gt(
                 createdAtStart.atStartOfDay()
             ))
         }
         //createdAtEnd 이후에 생성된 경우만
         else if(createdAtEnd!=null) {
-            println("CCC")
             builder.and(user.created_at.lt(
                 LocalDateTime.of(createdAtEnd, LocalTime.MAX).withNano(0)
             ))
