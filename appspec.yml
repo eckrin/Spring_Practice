@@ -1,0 +1,23 @@
+#배포 파일 설정
+files:
+    - source: / #인스턴스에 복사할 디렉터리 경로
+      destination: /home/ubuntu/blog #인스턴스에서 파일이 복사되는 위치
+      overwrite: yes #파일이 있는경우 대체
+
+#files 섹션에서 복사한 파일에 대한 권한 설정
+permissions:
+    - object: / #권한이 지정되는 파일 또는 디렉터리
+      pattern: "**" #매칭되는 패턴에만 권한 부여 - 모든 패턴
+      owner: ubuntu #object 소유자
+      group: ubuntu #object 그룹명
+
+#배포 이후 수행할 스크립트 지정
+hooks:
+    AfterInstall:
+        - location: scripts/stop.sh
+          timeout: 60
+          runas: ubuntu
+    ApplicationStart:
+        - location: scripts/start.sh
+          timeout: 60
+          runas: ubuntu
