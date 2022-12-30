@@ -20,7 +20,7 @@ class UserCustomRepositoryImpl:UserCustomRepository {
 
     val user = QUser("user")
 
-    override fun searchAllUser(email:String, createdAtStart: LocalDate?, createdAtEnd: LocalDate?):List<User> {
+    override fun searchAllUser(createdAtStart: LocalDate?, createdAtEnd: LocalDate?):List<User> {
 
         val builder = BooleanBuilder()
 
