@@ -30,6 +30,10 @@ jobs:
     
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      shell: bash
+    
     # (1) 기본 체크아웃
     - name: Checkout
       uses: actions/checkout@v2
@@ -70,3 +74,4 @@ jobs:
           --deployment-config-name CodeDeployDefault.AllAtOnce \
           --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
           --s3-location bucket=$S3_BUCKET_NAME,key=$GITHUB_SHA.zip,bundleType=zip
+        
