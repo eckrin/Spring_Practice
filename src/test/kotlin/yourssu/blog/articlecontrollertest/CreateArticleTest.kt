@@ -8,6 +8,7 @@ import org.mockito.MockitoAnnotations
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -16,6 +17,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import yourssu.blog.DefaultTest
 import yourssu.blog.dto.req.CreateArticleRequestDTO
 import yourssu.blog.dto.req.SignUpRequestDTO
+import yourssu.blog.entity.Role
 import yourssu.blog.service.UserService
 
 class CreateArticleTest: DefaultTest() {
@@ -23,8 +25,9 @@ class CreateArticleTest: DefaultTest() {
     @BeforeEach
     fun setUp() {
         MockitoAnnotations.openMocks(this)
-        userService.signUp(email, password, username)
-    }
+        userService.signUp(email, password, username, role)
+		accessToken = userService.signIn(email, password).accessToken
+	}
 
     @Autowired
     private lateinit var mockMvc:MockMvc
@@ -37,10 +40,11 @@ class CreateArticleTest: DefaultTest() {
     @DisplayName("게시글 작성 성공")
     fun createArticleTestSuccess() {
         //given
-        val dto = CreateArticleRequestDTO(email, password, title, content)
+        val dto = CreateArticleRequestDTO(email, password)
 
         //when
         val result = mockMvc.perform(post("/article/create")
+			.header(HttpHeaders.AUTHORIZATION, accessToken)
             .content(objectMapper.writeValueAsString(dto))
             .contentType(MediaType.APPLICATION_JSON))
 
@@ -55,10 +59,11 @@ class CreateArticleTest: DefaultTest() {
     @DisplayName("게시글 작성 실패 - 존재하지 않는 유저 정보")
     fun createArticleTestFailWrongEmail() {
         //given
-        val dto = CreateArticleRequestDTO(email+"wrong", password, title, content)
+        val dto = CreateArticleRequestDTO(title, content)
 
         //when
         val result = mockMvc.perform(post("/article/create")
+			.header(HttpHeaders.AUTHORIZATION, "localhost")
             .content(objectMapper.writeValueAsString(dto))
             .contentType(MediaType.APPLICATION_JSON))
 
@@ -71,10 +76,11 @@ class CreateArticleTest: DefaultTest() {
     @DisplayName("게시글 작성 실패 - 틀린 비밀번호")
     fun createArticleTestFailWrongPwd() {
         //given
-        val dto = CreateArticleRequestDTO(email, password+"wrong", title, content)
+        val dto = CreateArticleRequestDTO(title, content)
 
         //when
         val result = mockMvc.perform(post("/article/create")
+			.header(HttpHeaders.AUTHORIZATION, accessToken)
             .content(objectMapper.writeValueAsString(dto))
             .contentType(MediaType.APPLICATION_JSON))
 

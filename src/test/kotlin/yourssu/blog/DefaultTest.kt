@@ -19,4 +19,7 @@ class DefaultTest {
     val email2 = "email2@urssu.com"
     val password2 = "password2"
     val username2 = "username2"
+	val role = "USER"
+	lateinit var accessToken:String
+	lateinit var accessToken2:String
 }

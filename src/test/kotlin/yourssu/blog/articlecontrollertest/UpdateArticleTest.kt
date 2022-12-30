@@ -44,8 +44,8 @@ class UpdateArticleTest: DefaultTest() {
         MockitoAnnotations.openMocks(this)
 
         //회원정보 등록
-        userService.signUp(email, password, username)
-        userService.signUp(email2, password2, username2)
+        userService.signUp(email, password, username, role)
+        userService.signUp(email2, password2, username2, role)
 
         //수정할 게시글 생성 (user1)
 //        val dto = CreateArticleRequestDTO(email, password, title, content)
@@ -53,14 +53,14 @@ class UpdateArticleTest: DefaultTest() {
 //            .content(objectMapper.writeValueAsString(dto))
 //            .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk).andReturn()
 //        articleId = JsonPath.read(result.response.contentAsString, "$.articleId")
-        articleId = articleService.createArticle(email, password, title, content).articleId
+        articleId = articleService.createArticle(email, title, content).articleId
     }
 
     @Test
     @DisplayName("게시글 수정 성공")
     fun updateArticleTestSuccess() {
         //given
-        var newDto = UpdateArticleRequestDTO(email, password, uTitle, uContent)
+        var newDto = UpdateArticleRequestDTO(uTitle, uContent)
 
         //when
         var result = mockMvc.perform(post("/article/update/${articleId}")
@@ -77,7 +77,7 @@ class UpdateArticleTest: DefaultTest() {
     @DisplayName("게시글 수정 실패 - 존재하지 않는 유저")
     fun updateArticleTestFailWrongEmail() {
         //given
-        var newDto = UpdateArticleRequestDTO(email+"wrong", password, uTitle, uContent)
+        var newDto = UpdateArticleRequestDTO(uTitle, uContent)
 
         //when
         var result = mockMvc.perform(post("/article/update/${articleId}")
@@ -93,7 +93,7 @@ class UpdateArticleTest: DefaultTest() {
     @DisplayName("게시글 수정 실패 - 틀린 비밀번호")
     fun updateArticleTestFailWrongPwd() {
         //given
-        var newDto = UpdateArticleRequestDTO(email, password+"wrong", uTitle, uContent)
+        var newDto = UpdateArticleRequestDTO(uTitle, uContent)
 
         //when
         var result = mockMvc.perform(post("/article/update/${articleId}")
@@ -109,7 +109,7 @@ class UpdateArticleTest: DefaultTest() {
     @DisplayName("게시글 수정 실패 - 게시글 정보 없음")
     fun updateArticleTestFailWrongArticleId() {
         //given
-        var newDto = UpdateArticleRequestDTO(email, password, uTitle, uContent)
+        var newDto = UpdateArticleRequestDTO(uTitle, uContent)
 
         //when
         var result = mockMvc.perform(post("/article/update/${-0x3f3f3f3f}")
@@ -125,7 +125,7 @@ class UpdateArticleTest: DefaultTest() {
     @DisplayName("게시글 수정 실패 - 수정 권한 없음")
     fun updateArticleTestFailNoPermission() {
         //given
-        var newDto = UpdateArticleRequestDTO(email2, password2, uTitle, uContent)
+        var newDto = UpdateArticleRequestDTO(uTitle, uContent)
 
         //when
         var result = mockMvc.perform(post("/article/update/${articleId}")

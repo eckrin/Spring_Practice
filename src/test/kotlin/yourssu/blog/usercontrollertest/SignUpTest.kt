@@ -36,7 +36,7 @@ class SignUpTest:DefaultTest() {
     @DisplayName("회원가입 성공")
     fun signUpTestSuccess() {
         //given
-        val dto = SignUpRequestDTO(email, password, username)
+        val dto = SignUpRequestDTO(email, password, username, role)
 
         //when
         val result = mockMvc.perform(post("/signUp")
@@ -53,8 +53,8 @@ class SignUpTest:DefaultTest() {
     @DisplayName("회원가입 실패 - 중복 이메일")
     fun signUpTestFailDuplicateEmail() {
         //given
-        userService.signUp(email, password, username)
-        val dto = SignUpRequestDTO(email, password, username)
+        userService.signUp(email, password, username, role)
+        val dto = SignUpRequestDTO(email, password, username, role)
 
         //when
         val result = mockMvc.perform(post("/signUp")

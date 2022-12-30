@@ -6,12 +6,12 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.MockitoAnnotations
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import yourssu.blog.DefaultTest
-import yourssu.blog.dto.req.DeleteArticleRequestDTO
 import yourssu.blog.dto.req.UpdateArticleRequestDTO
 import yourssu.blog.service.ArticleService
 import yourssu.blog.service.UserService
@@ -34,22 +34,22 @@ class DeleteArticleTest: DefaultTest() {
         MockitoAnnotations.openMocks(this)
 
         //회원정보 등록
-        userService.signUp(email, password, username)
-        userService.signUp(email2, password2, username2)
+        userService.signUp(email, password, username, role)
+        userService.signUp(email2, password2, username2, role)
+		//로그인-token 받아오기
+		accessToken = userService.signIn(email, password).accessToken
+		accessToken2 = userService.signIn(email2, password2).accessToken
         //삭제할 게시글 생성
-        articleId = articleService.createArticle(email, password, title, content).articleId
+        articleId = articleService.createArticle(email, title, content).articleId
     }
 
     @Test
     @DisplayName("게시글 삭제 성공")
     fun deleteArticleTestSuccess() {
         //given
-        var dto = DeleteArticleRequestDTO(email, password)
-
         //when
         var result = mockMvc.perform(
             MockMvcRequestBuilders.post("/article/delete/${articleId}")
-            .content(objectMapper.writeValueAsString(dto))
             .contentType(MediaType.APPLICATION_JSON))
 
         //then
@@ -60,12 +60,10 @@ class DeleteArticleTest: DefaultTest() {
     @DisplayName("게시글 삭제 실패 - 존재하지 않는 유저")
     fun deleteArticleTestFailWrongEmail() {
         //given
-        var dto = DeleteArticleRequestDTO(email+"wrong", password)
-
         //when
         var result = mockMvc.perform(
             MockMvcRequestBuilders.post("/article/delete/${articleId}")
-                .content(objectMapper.writeValueAsString(dto))
+				.header(HttpHeaders.AUTHORIZATION, "qowepfhioshdafav4897hf9qhekauhew9qf")
                 .contentType(MediaType.APPLICATION_JSON))
 
         //then
@@ -74,32 +72,13 @@ class DeleteArticleTest: DefaultTest() {
     }
 
     @Test
-    @DisplayName("게시글 삭제 실패 - 틀린 비밀번호")
-    fun deleteArticleTestFailWrongPwd() {
-        //given
-        var dto = DeleteArticleRequestDTO(email, password+"wrong")
-
-        //when
-        var result = mockMvc.perform(
-            MockMvcRequestBuilders.post("/article/delete/${articleId}")
-                .content(objectMapper.writeValueAsString(dto))
-                .contentType(MediaType.APPLICATION_JSON))
-
-        //then
-        result.andExpect(MockMvcResultMatchers.status().isBadRequest)
-            .andExpect(MockMvcResultMatchers.jsonPath("message").value("유효하지 않은 비밀번호입니다."))
-    }
-
-    @Test
     @DisplayName("게시글 삭제 실패 - 삭제 권한 없음")
     fun deleteArticleTestFailNoPermission() {
         //given
-        var dto = DeleteArticleRequestDTO(email2, password2)
-
         //when
         var result = mockMvc.perform(
             MockMvcRequestBuilders.post("/article/delete/${articleId}")
-                .content(objectMapper.writeValueAsString(dto))
+				.header(HttpHeaders.AUTHORIZATION, accessToken2)
                 .contentType(MediaType.APPLICATION_JSON))
 
         //then
@@ -111,12 +90,10 @@ class DeleteArticleTest: DefaultTest() {
     @DisplayName("게시글 삭제 실패 - 게시글 정보 없음")
     fun deleteArticleTestFailWrongArticleId() {
         //given
-        var dto = DeleteArticleRequestDTO(email, password)
-
         //when
         var result = mockMvc.perform(
             MockMvcRequestBuilders.post("/article/delete/${-0x3f3f3f3f}")
-                .content(objectMapper.writeValueAsString(dto))
+				.header(HttpHeaders.AUTHORIZATION, accessToken)
                 .contentType(MediaType.APPLICATION_JSON))
 
         //then

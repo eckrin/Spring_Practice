@@ -19,7 +19,7 @@ class WithdrawTest:DefaultTest() {
     @BeforeEach
     fun setUp() {
         MockitoAnnotations.openMocks(this) //initmocks deprecated
-        userService.signUp(email, password, "username")
+        userService.signUp(email, password, "username", role)
     }
 
     @Autowired
@@ -34,11 +34,8 @@ class WithdrawTest:DefaultTest() {
     @DisplayName("회원탈퇴 성공")
     fun WithdrawTestSuccess() {
         //given
-        val dto = WithdrawRequestDTO(email, password)
-
         //when
         val result = mockMvc.perform(post("/withdraw")
-            .content(objectMapper.writeValueAsString(dto))
             .contentType(MediaType.APPLICATION_JSON))
 
         //then
@@ -49,11 +46,8 @@ class WithdrawTest:DefaultTest() {
     @DisplayName("회원탈퇴 실패 - 비밀번호 오류")
     fun WithdrawTestFailWrongPwd() {
         //given
-        val dto = WithdrawRequestDTO(email, password+"wrong")
-
         //when
         val result = mockMvc.perform(post("/withdraw")
-            .content(objectMapper.writeValueAsString(dto))
             .contentType(MediaType.APPLICATION_JSON))
 
         //then
