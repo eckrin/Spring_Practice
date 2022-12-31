@@ -1,4 +1,7 @@
 #배포 파일 설정
+version: 0.0
+os: linux
+
 files:
     - source: / #인스턴스에 복사할 디렉터리 경로
       destination: /home/ubuntu/blog #인스턴스에서 파일이 복사되는 위치
