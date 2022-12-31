@@ -18,6 +18,13 @@ env:
   S3_BUCKET_NAME: blog-github-actions-s3-bucket # S3 bucket name
   CODE_DEPLOY_APPLICATION_NAME: my-codedeploy-blog # Codedeploy-애플리케이션
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: my-codedeploy-deployment-group # Codedeploy-애플리케이션
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  DB_URL: ${{ secrets.DB_URL }}
+  DB_USERNAME: ${{ secrets.DB_USERNAME }}
+  DDL_AUTO: ${{ secrets.DDL_AUTO }}
+  EXPIRE_LEN: ${{ secrets.EXPIRE_LEN }}
+  SECRET_KEY: ${{ secrets.SECRET_KEY }}
+  SERVER_PORT: ${{ secrets.SERVER.PORT }}
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -39,7 +46,8 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-          
+      
+      # (3) Gradle 권한설정
       - name: Cache Gradle packages
         uses: actions/cache@v2
         with:
@@ -53,6 +61,9 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
         shell: bash
+        
+      # (4) 환경변수 세팅
+      - name: Generate Environment Variables File for Production
 
       # (3) Gradle build (Test 제외)
       - name: Build with Gradle
@@ -65,7 +76,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       # (5) 빌드 결과물을 S3 버킷에 업로드
       - name: Upload to AWS S3
