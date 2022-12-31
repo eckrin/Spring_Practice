@@ -66,6 +66,7 @@ class WebSecurityConfig {
     //websecurity: configuring that have global effect of web security
     fun webSecurityCustomizer(): WebSecurityCustomizer? {
         return WebSecurityCustomizer { web: WebSecurity -> web.ignoring().antMatchers(
+			"/test/**",
             "/signIn/**",
             "/signUp/**",
             "/v3/api-docs/**",
