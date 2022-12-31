@@ -1,4 +1,7 @@
 #배포 파일 설정
+version: 0.0
+os: linux
+
 files:
     - source: / #인스턴스에 복사할 디렉터리 경로
       destination: /home/ubuntu/blog #인스턴스에서 파일이 복사되는 위치
@@ -14,10 +17,10 @@ permissions:
 #배포 이후 수행할 스크립트 지정
 hooks:
     AfterInstall:
-        - location: scripts/stop.sh
+        - location: script/stop.sh
           timeout: 60
           runas: ubuntu
     ApplicationStart:
-        - location: scripts/start.sh
+        - location: script/start.sh
           timeout: 60
           runas: ubuntu
