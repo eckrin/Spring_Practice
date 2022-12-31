@@ -14,10 +14,10 @@ permissions:
 #배포 이후 수행할 스크립트 지정
 hooks:
     AfterInstall:
-        - location: scripts/stop.sh
+        - location: script/stop.sh
           timeout: 60
           runas: ubuntu
     ApplicationStart:
-        - location: scripts/start.sh
+        - location: script/start.sh
           timeout: 60
           runas: ubuntu
